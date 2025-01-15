@@ -1,0 +1,14 @@
+trigger: none
+
+pool:
+  vmImage: windows-latest
+
+stages:
+  - stage: stage1
+    jobs:
+      - template: templates/WindowsHealtchCheck_jobs.yml
+    
+
+  - stage: stage2
+    jobs:
+      - template: templates/WindowsHealtchCheck_jobs.yml

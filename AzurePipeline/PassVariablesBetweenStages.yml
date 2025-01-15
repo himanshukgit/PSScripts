@@ -1,0 +1,46 @@
+trigger:
+- none
+
+pool:
+  vmImage: windows-latest
+
+stages:
+  - stage: Stage1
+    jobs:
+      - job: Job1
+        steps:
+          - task: PowerShell@2
+            name: Task1
+            displayName: Create and Store variable
+            inputs:
+              targetType: 'inline'
+              script: |
+                $VMs = @("TestVM1","TestVM2","TestVM3")
+                Write-Host "##vso[task.setvariable variable=vmList;isOutput=true]$VMs"
+
+          
+          - task: PowerShell@2
+            name: Task2
+            displayName: Some Random task
+            inputs:
+              targetType: 'inline'
+              script: |
+                Write-Host "Some Random Task"
+  
+  - stage: Stage2
+    jobs:
+      - job: Job1
+        variables: 
+           vmList: $[ stageDependencies.Stage1.Job1.outputs['Task1.vmList'] ]
+        steps:
+          - task: PowerShell@2
+            name: Task1
+            displayName: Get Variable From Stage1
+            inputs:
+              targetType: 'inline'
+              script: |
+                Write-Host "VM List: $(vmList)"
+
+  
+
+  
